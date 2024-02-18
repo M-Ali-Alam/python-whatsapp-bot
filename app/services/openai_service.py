@@ -5,7 +5,7 @@ import os
 import time
 import logging
 
-load_dotenv()
+load_dotenv(override=True)
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_ASSISTANT_ID = os.getenv("OPENAI_ASSISTANT_ID")
 client = OpenAI(api_key=OPENAI_API_KEY)
@@ -14,7 +14,7 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 def upload_file(path):
     # Upload a file with an "assistants" purpose
     file = client.files.create(
-        file=open("../../data/airbnb-faq.pdf", "rb"), purpose="assistants"
+        file=open("../../data/Muhammad Ali Alam - CV.pdf", "rb"), purpose="assistants"
     )
 
 
@@ -23,10 +23,10 @@ def create_assistant(file):
     You currently cannot set the temperature for Assistant via the API.
     """
     assistant = client.beta.assistants.create(
-        name="WhatsApp AirBnb Assistant",
-        instructions="You're a helpful WhatsApp assistant that can assist guests that are staying in our Paris AirBnb. Use your knowledge base to best respond to customer queries. If you don't know the answer, say simply that you cannot help with question and advice to contact the host directly. Be friendly and funny.",
+        name="Whatsapp Assistant for Spanish Ministry of Education",
+        instructions="You're a helpful WhatsApp assistant that can assist people who are asking questions from pdf. Be friendly.",
         tools=[{"type": "retrieval"}],
-        model="gpt-4-1106-preview",
+        model="gpt-3.5-turbo-0125",
         file_ids=[file.id],
     )
     return assistant
@@ -75,9 +75,12 @@ def generate_response(message_body, wa_id, name):
     # If a thread doesn't exist, create one and store it
     if thread_id is None:
         logging.info(f"Creating new thread for {name} with wa_id {wa_id}")
-        thread = client.beta.threads.create()
-        store_thread(wa_id, thread.id)
-        thread_id = thread.id
+        try:
+            thread = client.beta.threads.create()
+            store_thread(wa_id, thread.id)
+            thread_id = thread.id
+        except Exception as e:
+            logging.error(f"Was not able to creat thread :(   sad life : {e}")
 
     # Otherwise, retrieve the existing thread
     else:
