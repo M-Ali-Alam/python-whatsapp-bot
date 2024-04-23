@@ -69,7 +69,9 @@ def send_message(data):
         "Authorization": f"Bearer {ACCESS_TOKEN}",
     }
 
+    # Another facebook api used
     url = f"https://graph.facebook.com/{VERSION}/{PHONE_NUMBER_ID}/messages"
+
 
     response = requests.post(url, data=data, headers=headers)
     if response.status_code == 200:
@@ -103,6 +105,7 @@ async def send_message(data):
 
     async with aiohttp.ClientSession() as session:
         url = "https://graph.facebook.com" + f"/{VERSION}/{PHONE_NUMBER_ID}/messages"
+        # What is https://graph.facebook.com need to learn
         try:
             async with session.post(url, data=data, headers=headers) as response:
                 if response.status == 200:
